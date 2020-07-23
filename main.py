@@ -40,6 +40,8 @@ def render():
 def main():
     run = True
 
+    game_array = [[None] * 3, [None] * 3, [None] * 3]
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
