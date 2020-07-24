@@ -1,4 +1,5 @@
 import pygame
+import math
 
 pygame.init()
 
@@ -14,6 +15,10 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+
+# Images
+X_IMAGE = pygame.transform.scale(pygame.image.load("images/x.png"), (80, 80))
+O_IMAGE = pygame.transform.scale(pygame.image.load("images/o.png"), (80, 80))
 
 
 def draw_grid():
@@ -41,28 +46,63 @@ def initialize_grid():
             x = dis_to_cen * (2 * j + 1)
             y = dis_to_cen * (2 * i + 1)
 
-            game_array[i][j] = ((x, y), False)
+            game_array[i][j] = (x, y, "", True)
 
     return game_array
+
+
+def click(game_array):
+    global x_turn, o_turn, images
+
+    m_x, m_y = pygame.mouse.get_pos()
+
+    for i in range(len(game_array)):
+        for elem in game_array[i]:
+            print(elem)
+            x, y, char, can_play = elem
+
+            dis = math.sqrt((x - m_x) ** 2 + (y - m_y) ** 2)
+
+            if dis < WIDTH // ROWS // 2:
+                if x_turn and can_play:
+                    images.append((x, y, X_IMAGE))
+                    x_turn = False
+                    o_turn = True
+
+                elif o_turn and can_play:
+                    images.append((x, y, O_IMAGE))
+                    x_turn = True
+                    o_turn = False
 
 
 def render():
     win.fill(WHITE)
     draw_grid()
+    for image in images:
+        x, y, IMAGE = image
+        win.blit(IMAGE, (x - IMAGE.get_width() // 2, y - IMAGE.get_height() // 2))
+
     pygame.display.update()
 
 
 def main():
+    global x_turn, o_turn, images
+
+    images = []
+
     run = True
 
-    game_array = initialize_grid()
+    x_turn = True
+    o_turn = False
 
-    print(game_array)
+    game_array = initialize_grid()
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                click(game_array)
 
         render()
 
