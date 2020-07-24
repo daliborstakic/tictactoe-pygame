@@ -57,9 +57,8 @@ def click(game_array):
     m_x, m_y = pygame.mouse.get_pos()
 
     for i in range(len(game_array)):
-        for elem in game_array[i]:
-            print(elem)
-            x, y, char, can_play = elem
+        for j in range(len(game_array[i])):
+            x, y, char, can_play = game_array[i][j]
 
             dis = math.sqrt((x - m_x) ** 2 + (y - m_y) ** 2)
 
@@ -68,11 +67,17 @@ def click(game_array):
                     images.append((x, y, X_IMAGE))
                     x_turn = False
                     o_turn = True
+                    game_array[i][j] = (x, y, 'x', False)
 
                 elif o_turn and can_play:
                     images.append((x, y, O_IMAGE))
                     x_turn = True
                     o_turn = False
+                    game_array[i][j] = (x, y, 'o', False)
+
+
+def has_won(game_array):
+    pass
 
 
 def render():
