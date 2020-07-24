@@ -33,10 +33,9 @@ def draw_grid():
 
     for i in range(ROWS):
         x = i * gap
-        y = i * gap
 
         pygame.draw.line(win, GRAY, (x, 0), (x, WIDTH), 3)
-        pygame.draw.line(win, GRAY, (0, y), (WIDTH, y), 3)
+        pygame.draw.line(win, GRAY, (0, x), (WIDTH, x), 3)
 
 
 def initialize_grid():
@@ -164,9 +163,7 @@ def main():
 
         render()
 
-        if has_won(game_array):
-            run = False
-        elif has_drawn(game_array):
+        if has_won(game_array) or has_drawn(game_array):
             run = False
 
 
