@@ -84,6 +84,7 @@ def click(game_array):
                     game_array[i][j] = (x, y, 'o', False)
 
 
+# Checking if someone has won
 def has_won(game_array):
     # Checking rows
     for row in range(len(game_array)):
@@ -110,6 +111,16 @@ def has_won(game_array):
     return False
 
 
+def has_drawn(game_array):
+    for i in range(len(game_array)):
+        for j in range(len(game_array[i])):
+            if game_array[i][j][2] == "":
+                return False
+
+    display_message("It's a draw!")
+    return True
+
+
 def display_message(content):
     pygame.time.delay(500)
     win.fill(WHITE)
@@ -132,9 +143,10 @@ def render():
 
 
 def main():
-    global x_turn, o_turn, images
+    global x_turn, o_turn, images, draw
 
     images = []
+    draw = False
 
     run = True
 
@@ -153,6 +165,8 @@ def main():
         render()
 
         if has_won(game_array):
+            run = False
+        elif has_drawn(game_array):
             run = False
 
 
