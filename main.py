@@ -31,6 +31,21 @@ def draw_grid():
         pygame.draw.line(win, GRAY, (0, y), (WIDTH, y), 3)
 
 
+def initialize_grid():
+    dis_to_cen = WIDTH // ROWS // 2
+
+    game_array = [[None, None, None], [None, None, None], [None, None, None]]
+
+    for i in range(len(game_array)):
+        for j in range(len(game_array[i])):
+            x = dis_to_cen * (2 * j + 1)
+            y = dis_to_cen * (2 * i + 1)
+
+            game_array[i][j] = ((x, y), False)
+
+    return game_array
+
+
 def render():
     win.fill(WHITE)
     draw_grid()
@@ -40,7 +55,9 @@ def render():
 def main():
     run = True
 
-    game_array = [[None] * 3, [None] * 3, [None] * 3]
+    game_array = initialize_grid()
+
+    print(game_array)
 
     while True:
         for event in pygame.event.get():
