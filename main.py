@@ -4,10 +4,9 @@ import math
 pygame.init()
 
 # Screen
-WIDTH = 300
+WIDTH = 600
 ROWS = 3
 win = pygame.display.set_mode((WIDTH, WIDTH))
-pygame.display.set_caption("TicTacToe")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -20,8 +19,11 @@ BLUE = (0, 0, 255)
 X_IMAGE = pygame.transform.scale(pygame.image.load("images/x.png"), (80, 80))
 O_IMAGE = pygame.transform.scale(pygame.image.load("images/o.png"), (80, 80))
 
+x_won = 0
+o_won = 0
+
 # Fonts
-END_FONT = pygame.font.SysFont('arial', 40)
+END_FONT = pygame.font.SysFont('Ink Free', 50)
 
 
 def draw_grid():
@@ -85,32 +87,51 @@ def click(game_array):
 
 # Checking if someone has won
 def has_won(game_array):
+    global x_won, o_won
     # Checking rows
+
     for row in range(len(game_array)):
         if (game_array[row][0][2] == game_array[row][1][2] == game_array[row][2][2]) and game_array[row][0][2] != "":
             display_message(game_array[row][0][2].upper() + " has won!")
+            if game_array[row][0][2].upper() == 'X':
+                x_won = x_won + 1
+            else:
+                o_won = o_won + 1
             return True
 
     # Checking columns
     for col in range(len(game_array)):
         if (game_array[0][col][2] == game_array[1][col][2] == game_array[2][col][2]) and game_array[0][col][2] != "":
             display_message(game_array[0][col][2].upper() + " has won!")
+            if game_array[row][0][2].upper() == 'X':
+                x_won = x_won + 1
+            else:
+                o_won = o_won + 1
             return True
 
     # Checking main diagonal
     if (game_array[0][0][2] == game_array[1][1][2] == game_array[2][2][2]) and game_array[0][0][2] != "":
         display_message(game_array[0][0][2].upper() + " has won!")
+        if game_array[row][0][2].upper() == 'X':
+            x_won = x_won + 1
+        else:
+            o_won = o_won + 1
         return True
 
     # Checking reverse diagonal
     if (game_array[0][2][2] == game_array[1][1][2] == game_array[2][0][2]) and game_array[0][2][2] != "":
         display_message(game_array[0][2][2].upper() + " has won!")
+        if game_array[row][0][2].upper() == 'X':
+            x_won = x_won + 1
+        else:
+            o_won = o_won + 1
         return True
 
     return False
 
 
 def has_drawn(game_array):
+    # TODO:logic can be improved to draw earlier
     for i in range(len(game_array)):
         for j in range(len(game_array[i])):
             if game_array[i][j][2] == "":
@@ -167,6 +188,12 @@ def main():
             run = False
 
 
+
+
 while True:
     if __name__ == '__main__':
+        pygame.display.set_caption("TicTacToe  X-{}  O-{}".format(x_won, o_won))
         main()
+
+
+
