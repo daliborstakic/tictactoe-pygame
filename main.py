@@ -25,6 +25,76 @@ o_won = 0
 # Fonts
 END_FONT = pygame.font.SysFont('Ink Free', 50)
 
+# basic font for user typed
+base_font = pygame.font.Font(None, 32)
+
+# color_active stores color(lightskyblue3) which
+# gets active when input box is clicked by user
+color_active = pygame.Color('lightskyblue3')
+
+# color_passive store color(chartreuse4) which is
+# color of input box.
+color_passive = pygame.Color('chartreuse4')
+
+
+class Textbox:
+    def __init__(self, screen, X, Y):
+        self.input_rect = pygame.Rect(X, Y, 140, 32)
+        self.color = color_passive
+        self.user_text = ""
+        self.active = False
+        self.text_surface = base_font.render(self.user_text, True, (255, 255, 255))
+        self.screen = screen
+        pygame.draw.rect(self.screen, self.color, self.input_rect)
+        self.change_mode()
+
+
+    def update_for_event(self, event):
+        """
+        This function should be called for each event that is happening with Event as parameter.
+        :param event: Event which is happened.
+        :type event:
+        :return:
+        :rtype:None
+        """
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.input_rect.collidepoint(event.pos):
+                if not self.active:
+                    self.active = True
+                    self.change_mode()
+            else:
+                if self.active:
+                    self.active = False
+                    self.change_mode()
+
+        if self.active:
+            if event.type == pygame.KEYDOWN:
+                # Check for backspace
+                if event.key == pygame.K_BACKSPACE:
+                    # get text input from 0 to -1 i.e. end.
+                    self.user_text = self.user_text[:-1]
+
+                # Unicode standard is used for string
+                # formation
+                else:
+                    self.user_text += event.unicode
+                self.update_text()
+
+    def change_mode(self):
+        # draw rectangle and argument passed which should
+        # be on screen
+        pygame.draw.rect(self.screen, self.color, self.input_rect)
+        self.update_text()
+
+    def update_text(self):
+        self.text_surface = base_font.render(self.user_text, True, (255, 255, 255))
+        # render at position stated in arguments
+        self.screen.blit(self.text_surface, (self.input_rect.x + 5, self.input_rect.y + 5))
+
+        # set width of textfield so that text cannot get
+        # outside of user's text input
+        self.input_rect.w = max(100, self.text_surface.get_width() + 10)
 
 def draw_grid():
     gap = WIDTH // ROWS
@@ -38,6 +108,45 @@ def draw_grid():
 
         pygame.draw.line(win, GRAY, (x, 0), (x, WIDTH), 3)
         pygame.draw.line(win, GRAY, (0, x), (WIDTH, x), 3)
+
+
+def show_login(input_name):
+
+    clock = pygame.time.Clock()
+
+    # it will display on screen
+    login_screen = pygame.display.set_mode([600, 500])
+
+    xlogin = Textbox(login_screen, 200, 200)
+
+    ologin = Textbox(login_screen, 200, 300)
+
+    # display.flip() will update only a portion of the
+    # screen to updated, not full area
+    pygame.display.flip()
+
+    # clock.tick(60) means that for every second at most
+    # 60 frames should be passed.
+    clock.tick(60)
+
+    while True:
+        for event in pygame.event.get():
+            # if user types QUIT then the screen will close
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if pygame.MOUSEBUTTONDOWN == event.type or pygame.KEYDOWN == event.type:
+                xlogin.update_for_event(event)
+                ologin.update_for_event(event)
+                # display.flip() will update only a portion of the
+                # screen to updated, not full area
+                pygame.display.flip()
+
+
+
+
+
 
 
 def initialize_grid():
@@ -173,6 +282,9 @@ def main():
     x_turn = True
     o_turn = False
 
+    show_login("X USER")
+    pygame.display.update()
+
     game_array = initialize_grid()
 
     while run:
@@ -188,12 +300,7 @@ def main():
             run = False
 
 
-
-
 while True:
     if __name__ == '__main__':
         pygame.display.set_caption("TicTacToe  X-{}  O-{}".format(x_won, o_won))
         main()
-
-
-
